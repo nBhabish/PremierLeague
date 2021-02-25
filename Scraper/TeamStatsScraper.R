@@ -26,7 +26,7 @@ listsOfNodes <- map(PremierLeagueTeamID, ReadAllTeamsHTML)
 
 rowNumber <- 1:25
 
-# Writing selectors for each player in the table
+# Writing players names' selectors for each player in the table
 
 PlayerNamesNode <- paste0(".InnerLayout__child--dividers:nth-child(",rowNumber, ") .InnerLayout__child--dividers .Table__TD:nth-child(", 2 ,")")
 
@@ -42,7 +42,7 @@ for(i in 1:20) {
 }
 
 
-# Writing selectors for each player in the table
+# Writing games played selectors for each player in the table
 
 PlayersGamePlayedStats <- paste0(".InnerLayout__child--dividers:nth-child(",rowNumber,") .InnerLayout__child--dividers .Table__TD:nth-child(3) .tar")
 
@@ -58,9 +58,21 @@ for(j in 1:20) {
 }
 
 
+# Writing goals scored selectors for each player in the table
+
+GoalsScored <- paste0(".InnerLayout__child--dividers:nth-child(",rowNumber,") .InnerLayout__child--dividers .tar+ .Table__TD")
+
+# Scraping goals scored by each player in the row
+
+GoalsScoredByPlayers <- as.list(1:20)
+
+for(k in 1:20) {
+  GoalsScoredByPlayers[[k]] <- listsOfNodes[[k]] %>%
+    html_nodes(GoalsScored) %>%
+    html_text()
+  k = k + 1
+}
 
 
-
-
-
+# Writing assists selectors for each player in the table
 
