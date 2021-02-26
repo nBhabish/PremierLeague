@@ -1,4 +1,10 @@
 
+# Configurations ----------------------------------------------------------
+
+library(rvest)
+library(tidyverse)
+library(datapasta)
+
 # Reading in url ----------------------------------------------------------
 
 
