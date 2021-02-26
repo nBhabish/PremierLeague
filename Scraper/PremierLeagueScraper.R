@@ -1,33 +1,46 @@
+
+# Reading in url ----------------------------------------------------------
+
+
 url <- "https://www.espn.com/soccer/standings/_/league/eng.1"
 
 htmlRef <- read_html(url) %>% 
   html_nodes("body") 
 
-# Creating an empty Premier League Table
+
+# Creating an empty PL table ----------------------------------------------
 premier_league_table <- as.data.frame(matrix(NA, ncol = 1, nrow = 20))
 
-# Scraping TeamNames
+
+# Scraping Team Names -----------------------------------------------------
+
+
 teamNames <- htmlRef %>% 
   html_nodes(".hide-mobile .AnchorLink") %>% 
   html_text()
 
-# Pasting TeamNames in the rows
+
+# Pasting Team Names in Rows ----------------------------------------------
+
+
 premier_league_table$V1 <- teamNames
 
-# Renaming the columns for TeamNames
+
+# Renaming column for Team Names ------------------------------------------
 
 premier_league_table <- premier_league_table %>% 
   rename(TeamNames = "V1")
 
-# Scraping other Table headers
+
+# Scraping Table Headers --------------------------------------------------
+
 table_headers <- htmlRef %>% 
   html_nodes(".underline .AnchorLink") %>% 
   html_text()
 
 
 
-
-# Extracting the stats
+# Extracting the stats ----------------------------------------------------
 
 node_numbers <- 1:20
 
@@ -41,15 +54,24 @@ get_stats <- function(nodes){
     html_text()
 }
 
-# Creating a tibble for stats
+
+# Creating tibble for stats -----------------------------------------------
+
+
 points <- map(nodes, get_stats) %>% 
   as_tibble_col() %>% 
   unnest_wider(col = value)
 
-# Renaming colnames
+
+# Renaming Columns --------------------------------------------------------
+
+
 colnames(points) <- table_headers
 
-# Replicating ESPN's Premier League Table
+
+# Replicating ESPN's PL table ---------------------------------------------
+
+
 premier_league_table <- cbind(premier_league_table, points) %>% 
   mutate(GP = as.integer(GP),
          W = as.integer(W),
@@ -60,4 +82,18 @@ premier_league_table <- cbind(premier_league_table, points) %>%
          GD = as.integer(GD),
          P = as.integer(P)) %>% 
   as_tibble()
+
+
+
+
+# Datapasta ---------------------------------------------------------------
+
+
+premier_league_table %>% 
+  select(TeamNames) %>% 
+  arrange(TeamNames) %>% 
+  pull() %>% 
+  datapasta::vector_paste_vertical()
+
+
 
