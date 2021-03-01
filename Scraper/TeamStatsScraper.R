@@ -1,6 +1,11 @@
-# Loading Required Libraries
+# Loading Libraries -------------------------------------------------------
+
 library(rvest)
 library(tidyverse)
+
+
+# html tidying ----------------------------------------------------------
+
 
 url <- "https://www.espn.com/soccer/standings/_/league/eng.1"
 
@@ -16,18 +21,25 @@ teamID <- htmlRef %>%
 PremierLeagueTeamID <-
   paste0("https://www.espn.com/soccer/team/stats/_/id/", teamID)
 
-# Read all teams html
+
+# Reading all teams HTML --------------------------------------------------
+
 
 ReadAllTeamsHTML <- function(clubsLinks) {
   read_html(clubsLinks)
 }
 
-# Applying ReadAllTeamsHTML function to PremierLeagueTeamID
+
+# Applying ReadAllTeamsHTML function to PremierLeagueTeamID ---------------
+
 listsOfNodes <- map(PremierLeagueTeamID, ReadAllTeamsHTML)
 
 rowNumber <- 1:25
 
-# Writing players names' selectors for each player in the table
+
+# Writing players names' selectors for each player in the table -----------
+
+
 
 PlayerNamesNode <-
   paste0(
@@ -38,7 +50,10 @@ PlayerNamesNode <-
     ")"
   )
 
-# Scraping names of each player
+
+# Scraping names of each player -------------------------------------------
+
+
 
 PlayersName <- as.list(1:20)
 
@@ -50,7 +65,10 @@ for (i in 1:20) {
 }
 
 
-# Writing games played selectors for each player in the table
+
+# Writing games played selectors for each player in the table -------------
+
+
 
 PlayersGamePlayedStats <-
   paste0(
@@ -61,7 +79,10 @@ PlayersGamePlayedStats <-
 
 GamesPlayedbyPlayers <- as.list(1:20)
 
-# Scraping games played by each player in the row
+
+# Scraping games played by each player in the row -------------------------
+
+
 
 for (j in 1:20) {
   GamesPlayedbyPlayers[[j]] <- listsOfNodes[[j]] %>%
@@ -71,7 +92,10 @@ for (j in 1:20) {
 }
 
 
-# Writing goals scored selectors for each player in the table
+
+# Writing goals scored selectors for each player in the table -------------
+
+
 
 GoalsScored <-
   paste0(
@@ -80,7 +104,10 @@ GoalsScored <-
     ") .InnerLayout__child--dividers .tar+ .Table__TD"
   )
 
-# Scraping goals scored by each player in the row
+
+# Scraping goals scored by each player in the row -------------------------
+
+
 
 GoalsScoredByPlayers <- as.list(1:20)
 
@@ -94,9 +121,15 @@ for (k in 1:20) {
 map(GoalsScoredByPlayers, as_tibble)
 
 
-# Writing assists selectors for each player in the table
 
-# Try using mutate_if
+# Writing assists selectors for each player in the table ------------------
+
+
+
+
+# Try using mutate_if -----------------------------------------------------
+
+
 
 
 
